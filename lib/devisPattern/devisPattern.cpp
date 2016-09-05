@@ -1,7 +1,7 @@
 #include "node.h"
 #include "devisPattern.hpp"
 
-TStrStrMap devisPattern::devisPattern::tMap;
+//TStrStrMap devisPattern::devisPattern::tMap;
 
 namespace devisPattern {
     
@@ -94,11 +94,8 @@ namespace devisPattern {
     
     int TFind(const TStrStrMap& map, const string& path) {
         auto i = FindPath(map, path);
-        if (i != map.end())
-        {
-           
-            return i->second;
-        }
+        if (i != map.end()) return i->second;
+    
         return -1 ;
     }
     
@@ -106,25 +103,25 @@ namespace devisPattern {
     {
         int data;
         v8::String::Utf8Value _path(args[0]->ToString());
-        data=TFind(tMap, *_path);
-        /*Local< Function > res;
-        res=Local<Function>::New(Isolate::GetCurrent(),data);*/
+        auto ptr = Unwrap<devisPattern>(args.Holder());
+        
+        data=TFind(ptr->tMap, *_path);
         args.GetReturnValue().Set(data);
     }
     
     void devisPattern::list(const v8::FunctionCallbackInfo<v8::Value>& args)
     {
         Isolate* isolate=Isolate::GetCurrent();
-        string s=liste(tMap);
-        args.GetReturnValue().Set(String::NewFromUtf8(isolate, liste(tMap).c_str()));
+        auto ptr = Unwrap<devisPattern>(args.Holder());
+        string s=liste(ptr->tMap);
+        args.GetReturnValue().Set(String::NewFromUtf8(isolate, liste(ptr->tMap).c_str()));
     }
     
     void devisPattern::add(const FunctionCallbackInfo<Value>& args) {
         auto id=args[1]->Int32Value();
+        auto ptr = Unwrap<devisPattern>(args.Holder());
         v8::String::Utf8Value _path(args[0]->ToString());
-        //cout<<obj->IsFunction()<<endl;
-        tMap.insert(TStrStrPair(*_path,id));
-        //args.GetReturnValue().Set(obj);
+        ptr->tMap.insert(TStrStrPair(*_path,id));
     }
     
 }  
