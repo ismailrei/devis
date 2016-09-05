@@ -1,4 +1,9 @@
+<img src="http://gdurl.com/PeQp" width="550"/>
+>A microservices framework for Node.js
+
+
 # Devis
+
 
 Devis is a framework for writing microservices and organizing the business logic of your app. You can break down your app into "stuff that happens", rather than focusing on data models or managing dependencies.
 
@@ -36,7 +41,7 @@ devis.add({
     for (var attribute in args)
         options[attribute] = args[attribute];
 
-    done(null, "initialization complete");
+    done("initialization complete");
 });
 
 devis.add({
@@ -68,7 +73,7 @@ function DELETE(args, done) {
         EntityToRemove.remove();
         fin = true;
     }
-    done(null, fin);
+    done(fin);
 }
 
 function PUT(args, done) {
@@ -87,7 +92,7 @@ function PUT(args, done) {
             fin = e;
         }
     }
-    done(null, fin);
+    done(fin);
 }
 
 function POST(args, done) {
@@ -107,7 +112,7 @@ function POST(args, done) {
         } catch (e) {
             fin = e;
         }
-        done(null, fin);
+        done(fin);
     }
 }
 
@@ -122,7 +127,7 @@ function GET(args, done) {
 
     } else
         fin = ds[dataClass][func]();
-    done(null, fin);
+    done(fin);
 }
 
 
@@ -135,9 +140,9 @@ module.exports = devis;
 let devis=require("devis");
 let data={firstName:"foo",lastName:"bar"};
 devis.usePath('wakanda/model');
-devis.act({role:"model",action:"initialize",dataClass:"Employee"},function(err,res){console.log(res)});
-devis.act({role:"model",action:"POST",Add:data},function(err,res){console.log(res)});
-devis.act({role:"model",action:"GET",func:"first"},function(err,res){console.log(res)});
+devis.act({role:"model",action:"initialize"},{dataClass:"Employee"},function(res){console.log(res)});
+devis.act({role:"model",action:"POST"},{Add:data},function(res){console.log(res)});
+devis.act({role:"model",action:"GET"},{func:"first"},function(res){console.log(res)});
 ```
 
 In this code,
@@ -160,16 +165,16 @@ var devis=require("devis");
 devis.add({
   action: 'game',
   cmd:'play'
-}, function(args, done) {
+}, function(args,done) {
 
-  done(null, { result: 'play' });
+  done({ result: 'play' });
 });
 devis.add({
   action: 'game',
   cmd:'pause'
 }, function(args, done) {
 
-  done(null, { result: 'pause' });
+  done({ result: 'pause' });
 });
 ```
 
@@ -199,11 +204,11 @@ var devis=require("devis")
   id:1
 }).setName('client');
 
-devis.act({ clientId:1,action: 'game', cmd: 'play' }, function (err, result) {
+devis.act({ clientId:1,action: 'game', cmd: 'play' }, function (result) {
     console.log(result);
 });
 
-devis.act({clientId:1,action: 'game', cmd: 'pause' }, function (err2, result2) {
+devis.act({clientId:1,action: 'game', cmd: 'pause' }, function (result2) {
     console.log(result2);
 });
 ```
