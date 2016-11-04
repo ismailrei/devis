@@ -1,9 +1,22 @@
-<img src="http://gdurl.com/PeQp" width="550"/>
+# Devis
+
+
+<img src="https://d13yacurqjgara.cloudfront.net/users/506824/screenshots/1824942/d.gif" width="250"/>
 >A microservices framework for Node.js
 
 
-# Devis
-
+<p align="center">
+  <a href="https://circleci.com/gh/Devisjs/devis/tree/master"><img src="https://img.shields.io/circleci/project/Devisjs/devis/master.svg" alt="Build Status"></a>
+  
+  <a href="https://www.npmjs.com/package/devis"><img src="https://img.shields.io/npm/dt/devis.svg" alt="Downloads"></a>
+  <a href="https://www.npmjs.com/package/devis"><img src="https://img.shields.io/npm/v/devis.svg" alt="Version"></a>
+  <a href="https://www.npmjs.com/package/devis"><img src="https://img.shields.io/npm/l/devis.svg" alt="License"></a>
+  <a href="https://www.bithound.io/github/Devisjs/devis/master/dependencies/npm"><img src="https://www.bithound.io/github/Devisjs/devis/badges/dependencies.svg" alt="bitHound Dependencies"></a>
+  <a href="https://www.bithound.io/github/Devisjs/devis"><img src="https://www.bithound.io/github/Devisjs/devis/badges/score.svg" alt="bitHound Overall Score"></a>
+  <br>
+  
+  
+</p>
 
 Devis is a framework for writing microservices and organizing the business logic of your app. You can break down your app into "stuff that happens", rather than focusing on data models or managing dependencies.
 
@@ -15,8 +28,12 @@ Devis provides:
 
 Use this module to define commands that work by taking in some JSON, and, optionally, returning some JSON. The command to run is selected by pattern-matching on the the input JSON. There are built-in and optional sets of commands that help you build Minimum Viable Products: data storage, user management, distributed logic, caching, logging, etc. And you can define your own product by breaking it into a set of commands - "stuff that happens". That's pretty much it.
 
-If you're using this module, and need help, you can post a [github issue][issue].
+**Remember** that Devis is based on devispattern that is an addon written in c ++.
 
+It's necessary, before using Devis to install:
+* python v2.7, and make a c ++ compiler like gcc under **unix / linux-gnu** and install more xcode with command line tools if you are under **mac os**
+
+* on **Windows**: Install all the required tools and configurations using Microsoft's windows-build-tools using ```npm install --global --production windows-build-tools``` from an elevated PowerShell or CMD.exe (run as Administrator).
 ## Install
 
 To install, simply use npm.
@@ -27,108 +44,26 @@ npm install devis
 
 ### Example:
 
--**model.js**:
+-**plugin.js**:
 
 ```javascript
 
-let devis = require("devis");
-let options = [];
+var devis=require("devis");
 
 devis.add({
-    role: "model",
-    action: "initialize"
-}, function(args, done) {
-    for (var attribute in args)
-        options[attribute] = args[attribute];
+  action: 'game',
+  cmd:'play'
+}, function(args,done) {
 
-    done("initialization complete");
+  done(null,args.name+" is playing game now");
 });
-
 devis.add({
-        role: "model",
-        action: "GET"
-    },
-    GET);
+  action: 'game',
+  cmd:'pause'
+}, function(args, done) {
 
-devis.add({
-    role: "model",
-    action: "POST"
-}, POST);
-
-devis.add({
-    role: "model",
-    action: "PUT"
-}, PUT);
-
-devis.add({
-    role: "model",
-    action: "DELETE"
-}, DELETE);
-
-function DELETE(args, done) {
-    let fin = false;
-    let dataClass = options.dataClass;
-    let EntityToRemove = ds[dataClass](args.ID)
-    if (EntityToRemove) {
-        EntityToRemove.remove();
-        fin = true;
-    }
-    done(fin);
-}
-
-function PUT(args, done) {
-    let fin = false;
-    let dataClass = options.dataClass;
-
-    let EntityToUpdate = ds[dataClass](args.ID) //args.ID={__KEY:10} or ={ID:10}
-    if (EntityToUpdate) {
-        try {
-            for (var attribute in args.Update) {
-                EntityToUpdate[attribute] = args.Update[attribute];
-            }
-            EntityToUpdate.save();
-            fin = true;
-        } catch (e) {
-            fin = e;
-        }
-    }
-    done(fin);
-}
-
-function POST(args, done) {
-    let fin;
-    let dataClass = options.dataClass;
-
-    if (args.Add) { //add new Entity
-        var newEntity = ds[dataClass].createEntity();
-
-        try {
-
-            for (var attribute in args.Add) {
-                newEntity[attribute] = args.Add[attribute];
-            }
-            newEntity.save();
-            fin = true;
-        } catch (e) {
-            fin = e;
-        }
-        done(fin);
-    }
-}
-
-function GET(args, done) {
-    let fin;
-    let dataClass = options.dataClass;
-    let func = args.func;
-    if (args.data) {
-        let searchData;
-
-        fin = ds[dataClass][func](args.data);
-
-    } else
-        fin = ds[dataClass][func]();
-    done(fin);
-}
+  done(null,args.name+" pause the game");
+});
 
 
 module.exports = devis;
@@ -138,11 +73,16 @@ module.exports = devis;
 
 ```javascript
 let devis=require("devis");
-let data={firstName:"foo",lastName:"bar"};
-devis.usePath('wakanda/model');
-devis.act({role:"model",action:"initialize"},{dataClass:"Employee"},function(res){console.log(res)});
-devis.act({role:"model",action:"POST"},{Add:data},function(res){console.log(res)});
-devis.act({role:"model",action:"GET"},{func:"first"},function(res){console.log(res)});
+devis.act({ action: 'game', cmd: 'pause' },{name:"foo"}, function (err, result) {
+  if (err) throw err;
+  console.log(result);
+});
+
+
+devis.act({action: 'gamer', cmd: 'play' },{name:"foo"}, function (err, result) {
+  if (err) throw err;
+  console.log(result);
+})
 ```
 
 In this code,
@@ -167,14 +107,14 @@ devis.add({
   cmd:'play'
 }, function(args,done) {
 
-  done({ result: 'play' });
+  done(null,{ result: 'play' });
 });
 devis.add({
   action: 'game',
   cmd:'pause'
 }, function(args, done) {
 
-  done({ result: 'pause' });
+  done(null,{ result: 'pause' });
 });
 ```
 
@@ -204,17 +144,21 @@ var devis=require("devis")
   id:1
 }).setName('client');
 
-devis.act({ clientId:1,action: 'game', cmd: 'play' }, function (result) {
+devis.act({ clientId:1,action: 'game', cmd: 'play' }, function (err,result) {
+    if (err) throw err;
     console.log(result);
 });
 
-devis.act({clientId:1,action: 'game', cmd: 'pause' }, function (result2) {
-    console.log(result2);
+devis.act({clientId:1,action: 'game', cmd: 'pause' }, function (err,result) {
+    if (err) throw err;
+    console.log(result);
 });
 ```
 ![alt tag](https://scontent-mrs1-1.xx.fbcdn.net/v/t1.0-9/14063796_10207296496553093_5124476474447040595_n.jpg?oh=d8374fc6176cfd662fa84dbddbe187e9&oe=58486A3C)
 
 On the client-side, calling `devis.client()` means that Devis will send any actions it cannot match locally out over the network. In this case, the configuration server will match the `action: 'game', cmd: 'play'` and `action: 'game', cmd: 'pause'` pattern and return the configuration data.
+
+It's imperative to define a unique identifier for each Microservice consumed as client and add the ClientId when calling each remote propertie
 
 ###Other examples:
 we will take the previous example and add a Unix socket (UNIX or GNU/LINUX) and a Named Pipes (WINDOWS) instead of HTTP or TCP:
