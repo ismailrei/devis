@@ -4,27 +4,29 @@
   "description": "A microservices framework for Node.js",
   "main": "devis.js",
   "scripts": {
-    "test": "lab -v -P test -L -t 80"
+    "test": "lab -v -P test -L -t 80",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "author": "ismail reida",
   "keywords": [
-  "micro",
-  "service",
-  "microservice",
-  "micro-service",
-  "microservices",
-  "micro-services",
-  "services",
-  "micro services",
-  "micro service",
-  "framework",
-  "minimum",
-  "viable",
-  "product",
-  "toolkit",
-  "startup"
-],
-"repository": {
+    "micro",
+    "service",
+    "microservice",
+    "micro-service",
+    "microservices",
+    "micro-services",
+    "services",
+    "micro services",
+    "micro service",
+    "framework",
+    "minimum",
+    "viable",
+    "product",
+    "toolkit",
+    "startup"
+  ],
+  "repository": {
     "type": "git",
     "url": "https://github.com/Devisjs/devis.git"
   },
@@ -35,6 +37,8 @@
     "eraro": "^0.4.1",
     "jsonpack": "^1.1.5",
     "lodash": "^4.15.0",
-    "use-plugin": "^0.3.1"
-  }
+    "use-plugin": "^0.3.1",
+    "snyk": "^1.192.3"
+  },
+  "snyk": true
 }
